@@ -1,0 +1,9 @@
+{
+    "postgresql": {
+        "username": "postgres",
+        "password": "postgres",
+        "server": "localhost",
+        "port": "5432",
+        "database": "SmartSensor"
+    }
+}
