@@ -1,54 +1,62 @@
+// Chamada ao módulo para tratamento erro e melhor escrita das funções callback
+var Promise = require("bluebird");
+
+var handleNotFound = function(data){
+    if(!data){
+        var err = new Error('Not found!');
+        err.status = 404;
+        throw err;
+    }
+
+    return data;
+}
+
 function sensoresController(sensoresModel){
-    this.model = sensoresModel;
+    this.model = Promise.promisifyAll(sensoresModel);
 }    
 
 sensoresController.prototype.getAll = function(req, res, next){
-    console.log(req.query);
-    this.model.find({}, function (err, data) {
-       if(err) {
-           return next(err);
-       }
-       res.json(data.rows);
-    });
+    this.model.findAsync({})
+        .then(function (data) {
+            res.json(data.rows);    
+        })
+        .catch(next);
 }
 sensoresController.prototype.getById = function(req, res, next){
     var id = req.params._id;
-    this.model.findOne(id, function (err, data) {
-        if(err) {
-            //console.log(err.stack);
-            return next(err);
-        }
-        res.json(data.rows);
-     });
+    this.model.findOneAsync(id)
+        .then(handleNotFound)
+        .then(function (data) {
+            res.json(data.rows);
+        })
+        .catch(next);
 }
 sensoresController.prototype.create = function(req, res, next){
-    this.model.create(req.body, function (err, data) {
-        if(err) {
-            return next(err);
-        }
-        res.json(data);
-     });
+    var body = req.body;
+    this.model.createAsync(body)
+        .then(function (data) {
+            res.json(data);
+        })
+        .catch(next);
+     
 }
 sensoresController.prototype.update = function(req, res, next){
     var id = req.params._id,
         body = req.body;
-    this.model.update(id, body, function (err, data) {
-        if(err) {
-            console.log("upadeteController");
-            return next(err);
-        }
-        res.json(data.rows);
-    });
+    this.model.updateAsync(id, body)
+        .then(function (data){
+            res.json(data);
+        })
+        .catch(next);
 }
 sensoresController.prototype.remove = function(req, res, next){
     var id = req.params._id;
-    this.model.remove(id, function (err, data) {
-        if(err) {
-            console.log("Erro removeController");
-            return next(err);
-        }
-        res.json(data.rows);
-    });
+    this.model.removeAsync(id)
+        .then(function (data) {
+            res.json(data.rows);
+        })
+        .catch(next);
+    
 }
 
 module.exports = function (sensoresModel) {

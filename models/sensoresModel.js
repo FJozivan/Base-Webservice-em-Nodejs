@@ -16,14 +16,14 @@ sensoresModel.prototype.findOne = function(_id, callback){
 }
 
 sensoresModel.prototype.create = function(data, callback){
-    console.log("Chaguei createModel");
+    console.log("Cheguei createModel");
     this.postgresqlDB.query('INSERT INTO "SmartSensor".sensores' + '(data_cadastro, token, mac, observacoes)' + ' VALUES (' + "'" + data.data_cadastro + "', " + "'" + data.token + "', " + "'" + data.mac + "', " + "'" + data.observacoes +"')",  (err,res) => {
         callback(err, res);
     });
 }
 
 sensoresModel.prototype.update = function(_id, data, callback){
-    console.log("Chaguei UpdateModel");
+    console.log("Cheguei UpdateModel");
     console.log('UPDATE "SmartSensor".sensores SET data_cadastro = ' + "'" + data.data_cadastro + "'" + ', token = ' + "'" + data.token + "'" +', mac = ' + "'" + data.mac + "'" + ', observacoes = ' + "'" + data.observacoes + "'" + ' WHERE id_sensor = ' + _id);
     this.postgresqlDB.query('UPDATE "SmartSensor".sensores SET data_cadastro = ' + "'" + data.data_cadastro + "'" + ', token = ' + "'" + data.token + "'" +', mac = ' + "'" + data.mac + "'" + ', observacoes = ' + "'" + data.observacoes + "'" + ' WHERE id_sensor = ' + _id,  (err,res) => {
         callback(err, res);
